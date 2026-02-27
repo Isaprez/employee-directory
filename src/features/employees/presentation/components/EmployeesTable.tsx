@@ -25,13 +25,18 @@ const columns = [
       const status = info.getValue();
       return (
         <span
-          className={`inline-block rounded-full px-2 py-1 text-xs font-semibold ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
             status === "active"
-              ? "bg-green-100 text-green-800"
-              : "bg-gray-100 text-gray-800"
+              ? "bg-green-50 text-green-700"
+              : "bg-red-50 text-red-700"
           }`}
         >
-          {status}
+          <span
+            className={`inline-block h-1.5 w-1.5 rounded-full ${
+              status === "active" ? "bg-green-500" : "bg-red-500"
+            }`}
+          />
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
       );
     },
@@ -40,9 +45,10 @@ const columns = [
 
 interface EmployeesTableProps {
   data: Employee[];
+  onRowClick?: (employee: Employee) => void;
 }
 
-export default function EmployeesTable({ data }: EmployeesTableProps) {
+export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps) {
   const table = useReactTable({
     data,
     columns,
@@ -71,7 +77,11 @@ export default function EmployeesTable({ data }: EmployeesTableProps) {
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+            <tr
+              key={row.id}
+              className={`hover:bg-gray-50 ${onRowClick ? "cursor-pointer" : ""}`}
+              onClick={() => onRowClick?.(row.original)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
