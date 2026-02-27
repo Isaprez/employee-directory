@@ -30,6 +30,10 @@ No test runner is configured yet.
 
 **Mock data:** `db.json` at project root has `employees` (10 records) and `departments` (6 records) tables served by json-server on port 3001.
 
+## Documentation Lookup
+
+- Always use context7 to check up-to-date docs when implementing or modifying code that uses RTK Query, React Hook Form, Zod, TanStack Table, or any third-party library.
+
 ## Code Style
 
 - Use comments sparingly — only comment complex or non-obvious code

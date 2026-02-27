@@ -20,6 +20,23 @@ export default function EmployeesPage() {
     );
   }
 
+  if (showCreateForm) {
+    return (
+      <div className="p-8">
+        <button
+          onClick={() => setShowCreateForm(false)}
+          className="mb-6 text-sm text-blue-600 hover:text-blue-800"
+        >
+          &larr; Back to Employees
+        </button>
+        <h1 className="mb-6 text-2xl font-bold text-gray-900">
+          New Employee
+        </h1>
+        <EmployeeCreateForm onSuccess={() => setShowCreateForm(false)} />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <p className="p-8 text-gray-500">Loading employees...</p>;
   }
@@ -33,20 +50,12 @@ export default function EmployeesPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
         <button
-          onClick={() => setShowCreateForm((prev) => !prev)}
+          onClick={() => setShowCreateForm(true)}
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          {showCreateForm ? "Cancel" : "Add Employee"}
+          Add Employee
         </button>
       </div>
-      {showCreateForm && (
-        <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            New Employee
-          </h2>
-          <EmployeeCreateForm onSuccess={() => setShowCreateForm(false)} />
-        </div>
-      )}
       {employees && (
         <EmployeesTable
           data={employees}
