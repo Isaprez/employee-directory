@@ -2,7 +2,7 @@ import {
   useGetEmployeeDetailByIdQuery,
   useUpdateEmployeeDetailMutation,
 } from "../../data/employee-detailApi";
-import { useGetDepartmentsQuery } from "../../../employees/data/employeesApi";
+import { useGetDepartmentsQuery } from "../../../../shared/api/apiSlice";
 import EmployeeDetailForm from "../components/EmployeeDetailForm";
 
 interface EmployeeDetailDetailPageProps {

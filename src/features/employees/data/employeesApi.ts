@@ -1,10 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Employee, Department } from "../domain/employee.types";
+import { apiSlice } from "../../../shared/api/apiSlice";
+import type { Employee } from "../domain/employee.types";
 
-export const employeesApi = createApi({
-  reducerPath: "employeesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001" }),
-  tagTypes: ["Employees"],
+const employeesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getEmployees: builder.query<Employee[], void>({
       query: () => "/employees",
@@ -15,9 +12,6 @@ export const employeesApi = createApi({
               "Employees",
             ]
           : ["Employees"],
-    }),
-    getDepartments: builder.query<Department[], void>({
-      query: () => "/departments",
     }),
     addEmployee: builder.mutation<Employee, Omit<Employee, "id">>({
       query: (body) => ({
@@ -30,8 +24,4 @@ export const employeesApi = createApi({
   }),
 });
 
-export const {
-  useGetEmployeesQuery,
-  useGetDepartmentsQuery,
-  useAddEmployeeMutation,
-} = employeesApi;
+export const { useGetEmployeesQuery, useAddEmployeeMutation } = employeesApi;

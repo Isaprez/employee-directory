@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  useGetEmployeesQuery,
-  useGetDepartmentsQuery,
-} from "../../data/employeesApi";
+import { useGetEmployeesQuery } from "../../data/employeesApi";
+import { useGetDepartmentsQuery } from "../../../../shared/api/apiSlice";
 import EmployeesTable from "../components/EmployeesTable";
 import EmployeeCreateForm from "../components/EmployeeCreateForm";
 import DepartmentFilter from "../components/DepartmentFilter";
-import EmployeeDetailDetailPage from "../../../employee-detail/presentation/pages/EmployeeDetailDetailPage";
 
-export default function EmployeesPage() {
+interface EmployeesPageProps {
+  onSelectEmployee: (id: number) => void;
+}
+
+export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) {
   const { data: employees, isLoading, error } = useGetEmployeesQuery();
   const { data: departments } = useGetDepartmentsQuery();
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
-    null
-  );
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -34,15 +32,6 @@ export default function EmployeesPage() {
     setShowCreateForm(false);
     setSuccessMessage("Employee created successfully.");
   }, []);
-
-  if (selectedEmployeeId !== null) {
-    return (
-      <EmployeeDetailDetailPage
-        employeeId={selectedEmployeeId}
-        onBack={() => setSelectedEmployeeId(null)}
-      />
-    );
-  }
 
   if (showCreateForm) {
     return (
@@ -117,7 +106,7 @@ export default function EmployeesPage() {
       {filteredEmployees && (
         <EmployeesTable
           data={filteredEmployees}
-          onRowClick={(employee) => setSelectedEmployeeId(employee.id)}
+          onRowClick={(employee) => onSelectEmployee(employee.id)}
         />
       )}
     </div>

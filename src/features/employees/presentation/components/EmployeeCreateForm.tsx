@@ -1,15 +1,17 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  useAddEmployeeMutation,
-  useGetDepartmentsQuery,
-} from "../../data/employeesApi";
+import { useAddEmployeeMutation } from "../../data/employeesApi";
+import { useGetDepartmentsQuery } from "../../../../shared/api/apiSlice";
 
 const employeeSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^[+]?[\d\s()-]+$/, "Invalid phone number"),
   position: z.string().min(1, "Position is required"),
   department: z.string().min(1, "Department is required"),
   status: z.enum(["active", "inactive"]),
@@ -25,7 +27,8 @@ export default function EmployeeCreateForm({
   onSuccess,
 }: EmployeeCreateFormProps) {
   const { data: departments } = useGetDepartmentsQuery();
-  const [addEmployee, { isLoading }] = useAddEmployeeMutation();
+  const [addEmployee, { isLoading, error: mutationError }] =
+    useAddEmployeeMutation();
 
   const {
     register,
@@ -38,6 +41,7 @@ export default function EmployeeCreateForm({
       firstName: "",
       lastName: "",
       email: "",
+      phone: "",
       position: "",
       department: "",
       status: "active",
@@ -91,6 +95,14 @@ export default function EmployeeCreateForm({
       </div>
 
       <div>
+        <label htmlFor="phone" className={labelClass}>Phone</label>
+        <input id="phone" type="tel" {...register("phone")} className={inputClass} />
+        {errors.phone && (
+          <p className={errorClass}>{errors.phone.message}</p>
+        )}
+      </div>
+
+      <div>
         <label htmlFor="position" className={labelClass}>Position</label>
         <input id="position" {...register("position")} className={inputClass} />
         {errors.position && (
@@ -123,6 +135,12 @@ export default function EmployeeCreateForm({
           <p className={errorClass}>{errors.status.message}</p>
         )}
       </div>
+
+      {mutationError && (
+        <p className="text-sm text-red-600" role="alert">
+          Failed to create employee. Please try again.
+        </p>
+      )}
 
       <button
         type="submit"
