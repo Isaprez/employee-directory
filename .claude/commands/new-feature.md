@@ -45,3 +45,9 @@ Use `tagTypes` with `providesTags` and `invalidatesTags` for automatic cache inv
 - Add proper TypeScript types everywhere — no `any`
 - Keep each file focused on a single responsibility
 - Do NOT add the feature to any routes or navigation yet
+
+## Review Step
+
+After creating all files, invoke the ui-ux-reviewer agent to review
+the table component. Implement any feedback that relates to accessibility
+or critical UX issues before considering the feature complete.
