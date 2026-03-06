@@ -66,16 +66,16 @@ export default function EmployeeCreateForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>First Name</label>
-          <input {...register("firstName")} className={inputClass} />
+          <label htmlFor="firstName" className={labelClass}>First Name</label>
+          <input id="firstName" {...register("firstName")} className={inputClass} />
           {errors.firstName && (
             <p className={errorClass}>{errors.firstName.message}</p>
           )}
         </div>
 
         <div>
-          <label className={labelClass}>Last Name</label>
-          <input {...register("lastName")} className={inputClass} />
+          <label htmlFor="lastName" className={labelClass}>Last Name</label>
+          <input id="lastName" {...register("lastName")} className={inputClass} />
           {errors.lastName && (
             <p className={errorClass}>{errors.lastName.message}</p>
           )}
@@ -83,24 +83,24 @@ export default function EmployeeCreateForm({
       </div>
 
       <div>
-        <label className={labelClass}>Email</label>
-        <input type="email" {...register("email")} className={inputClass} />
+        <label htmlFor="email" className={labelClass}>Email</label>
+        <input id="email" type="email" {...register("email")} className={inputClass} />
         {errors.email && (
           <p className={errorClass}>{errors.email.message}</p>
         )}
       </div>
 
       <div>
-        <label className={labelClass}>Position</label>
-        <input {...register("position")} className={inputClass} />
+        <label htmlFor="position" className={labelClass}>Position</label>
+        <input id="position" {...register("position")} className={inputClass} />
         {errors.position && (
           <p className={errorClass}>{errors.position.message}</p>
         )}
       </div>
 
       <div>
-        <label className={labelClass}>Department</label>
-        <select {...register("department")} className={inputClass}>
+        <label htmlFor="department" className={labelClass}>Department</label>
+        <select id="department" {...register("department")} className={inputClass}>
           <option value="">Select a department</option>
           {departments?.map((dept) => (
             <option key={dept.id} value={dept.name}>
@@ -114,8 +114,8 @@ export default function EmployeeCreateForm({
       </div>
 
       <div>
-        <label className={labelClass}>Status</label>
-        <select {...register("status")} className={inputClass}>
+        <label htmlFor="status" className={labelClass}>Status</label>
+        <select id="status" {...register("status")} className={inputClass}>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
         </select>

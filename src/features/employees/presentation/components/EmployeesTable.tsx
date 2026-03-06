@@ -4,6 +4,7 @@ import {
   createColumnHelper,
   flexRender,
 } from "@tanstack/react-table";
+import type React from "react";
 import type { Employee } from "../../domain/employee.types";
 
 const columnHelper = createColumnHelper<Employee>();
@@ -32,6 +33,7 @@ const columns = [
           }`}
         >
           <span
+            aria-hidden="true"
             className={`inline-block h-1.5 w-1.5 rounded-full ${
               status === "active" ? "bg-green-500" : "bg-red-500"
             }`}
@@ -64,7 +66,7 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -81,6 +83,18 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
               key={row.id}
               className={`hover:bg-gray-50 ${onRowClick ? "cursor-pointer" : ""}`}
               onClick={() => onRowClick?.(row.original)}
+              {...(onRowClick
+                ? {
+                    tabIndex: 0,
+                    role: "button",
+                    onKeyDown: (e: React.KeyboardEvent) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onRowClick(row.original);
+                      }
+                    },
+                  }
+                : {})}
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">

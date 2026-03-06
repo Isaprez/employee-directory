@@ -25,7 +25,7 @@ export default function EmployeesPage() {
       <div className="p-8">
         <button
           onClick={() => setShowCreateForm(false)}
-          className="mb-6 text-sm text-blue-600 hover:text-blue-800"
+          className="mb-6 text-sm text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2"
         >
           &larr; Back to Employees
         </button>
