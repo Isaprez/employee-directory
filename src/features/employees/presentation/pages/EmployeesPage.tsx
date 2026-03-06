@@ -1,16 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
-import { useGetEmployeesQuery } from "../../data/employeesApi";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useGetEmployeesQuery,
+  useGetDepartmentsQuery,
+} from "../../data/employeesApi";
 import EmployeesTable from "../components/EmployeesTable";
 import EmployeeCreateForm from "../components/EmployeeCreateForm";
+import DepartmentFilter from "../components/DepartmentFilter";
 import EmployeeDetailDetailPage from "../../../employee-detail/presentation/pages/EmployeeDetailDetailPage";
 
 export default function EmployeesPage() {
   const { data: employees, isLoading, error } = useGetEmployeesQuery();
+  const { data: departments } = useGetDepartmentsQuery();
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
     null
   );
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+
+  const filteredEmployees = useMemo(() => {
+    if (!employees) return undefined;
+    if (!selectedDepartment) return employees;
+    return employees.filter((e) => e.department === selectedDepartment);
+  }, [employees, selectedDepartment]);
 
   useEffect(() => {
     if (!successMessage) return;
@@ -79,9 +91,10 @@ export default function EmployeesPage() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
-          {employees && (
+          {filteredEmployees && (
             <p className="mt-1 text-sm text-gray-500">
-              {employees.length} {employees.length === 1 ? "employee" : "employees"}
+              {filteredEmployees.length}{" "}
+              {filteredEmployees.length === 1 ? "employee" : "employees"}
             </p>
           )}
         </div>
@@ -92,9 +105,18 @@ export default function EmployeesPage() {
           Add Employee
         </button>
       </div>
-      {employees && (
+      {departments && (
+        <div className="mb-4">
+          <DepartmentFilter
+            departments={departments}
+            value={selectedDepartment}
+            onChange={setSelectedDepartment}
+          />
+        </div>
+      )}
+      {filteredEmployees && (
         <EmployeesTable
-          data={employees}
+          data={filteredEmployees}
           onRowClick={(employee) => setSelectedEmployeeId(employee.id)}
         />
       )}
