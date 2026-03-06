@@ -15,12 +15,24 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredEmployees = useMemo(() => {
     if (!employees) return undefined;
-    if (!selectedDepartment) return employees;
-    return employees.filter((e) => e.department === selectedDepartment);
-  }, [employees, selectedDepartment]);
+    let result = employees;
+    if (selectedDepartment) {
+      result = result.filter((e) => e.department === selectedDepartment);
+    }
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (e) =>
+          e.firstName.toLowerCase().includes(query) ||
+          e.lastName.toLowerCase().includes(query)
+      );
+    }
+    return result;
+  }, [employees, selectedDepartment, searchQuery]);
 
   useEffect(() => {
     if (!successMessage) return;
@@ -94,15 +106,22 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
           Add Employee
         </button>
       </div>
-      {departments && (
-        <div className="mb-4">
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <input
+          type="search"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-64"
+        />
+        {departments && (
           <DepartmentFilter
             departments={departments}
             value={selectedDepartment}
             onChange={setSelectedDepartment}
           />
-        </div>
-      )}
+        )}
+      </div>
       {filteredEmployees && (
         <EmployeesTable
           data={filteredEmployees}
@@ -112,3 +131,4 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
     </div>
   );
 }
+
