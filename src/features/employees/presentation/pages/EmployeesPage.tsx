@@ -38,11 +38,19 @@ export default function EmployeesPage() {
   }
 
   if (isLoading) {
-    return <p className="p-8 text-gray-500">Loading employees...</p>;
+    return (
+      <div role="status" aria-live="polite" className="p-8 text-gray-500">
+        Loading employees...
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="p-8 text-red-600">Failed to load employees.</p>;
+    return (
+      <div role="alert" aria-live="assertive" className="p-8 text-red-600">
+        Failed to load employees.
+      </div>
+    );
   }
 
   return (

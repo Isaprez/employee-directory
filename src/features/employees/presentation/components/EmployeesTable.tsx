@@ -13,6 +13,9 @@ const columns = [
   columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
     id: "name",
     header: "Name",
+    cell: (info) => (
+      <span className="font-medium text-gray-900">{info.getValue()}</span>
+    ),
   }),
   columnHelper.accessor("position", {
     header: "Position",
@@ -66,7 +69,7 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600"
+                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 sm:px-6"
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -81,7 +84,7 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className={`hover:bg-gray-50 ${onRowClick ? "cursor-pointer" : ""}`}
+              className={`hover:bg-gray-100 ${onRowClick ? "cursor-pointer" : ""}`}
               onClick={() => onRowClick?.(row.original)}
               {...(onRowClick
                 ? {
@@ -97,7 +100,7 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
                 : {})}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                <td key={cell.id} className="px-3 py-3 text-sm text-gray-600 sm:whitespace-nowrap sm:px-6 sm:py-4">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
