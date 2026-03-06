@@ -28,7 +28,8 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
       result = result.filter(
         (e) =>
           e.firstName.toLowerCase().includes(query) ||
-          e.lastName.toLowerCase().includes(query)
+          e.lastName.toLowerCase().includes(query) ||
+          `${e.firstName} ${e.lastName}`.toLowerCase().includes(query)
       );
     }
     return result;
@@ -93,7 +94,7 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
           {filteredEmployees && (
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500" aria-live="polite" aria-atomic="true">
               {filteredEmployees.length}{" "}
               {filteredEmployees.length === 1 ? "employee" : "employees"}
             </p>
@@ -106,14 +107,20 @@ export default function EmployeesPage({ onSelectEmployee }: EmployeesPageProps) 
           Add Employee
         </button>
       </div>
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <input
-          type="search"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-64"
-        />
+      <div role="search" aria-label="Employee search and filters" className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="w-full sm:w-64">
+          <label htmlFor="employee-search" className="sr-only">
+            Search employees by name
+          </label>
+          <input
+            id="employee-search"
+            type="search"
+            placeholder="Search by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
         {departments && (
           <DepartmentFilter
             departments={departments}
