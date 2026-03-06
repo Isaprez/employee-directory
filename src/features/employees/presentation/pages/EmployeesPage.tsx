@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGetEmployeesQuery } from "../../data/employeesApi";
 import EmployeesTable from "../components/EmployeesTable";
 import EmployeeCreateForm from "../components/EmployeeCreateForm";
@@ -10,6 +10,18 @@ export default function EmployeesPage() {
     null
   );
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!successMessage) return;
+    const timer = setTimeout(() => setSuccessMessage(null), 4000);
+    return () => clearTimeout(timer);
+  }, [successMessage]);
+
+  const handleCreateSuccess = useCallback(() => {
+    setShowCreateForm(false);
+    setSuccessMessage("Employee created successfully.");
+  }, []);
 
   if (selectedEmployeeId !== null) {
     return (
@@ -22,24 +34,24 @@ export default function EmployeesPage() {
 
   if (showCreateForm) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <button
           onClick={() => setShowCreateForm(false)}
-          className="mb-6 text-sm text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2"
+          className="mb-6 inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2"
         >
           &larr; Back to Employees
         </button>
         <h1 className="mb-6 text-2xl font-bold text-gray-900">
           New Employee
         </h1>
-        <EmployeeCreateForm onSuccess={() => setShowCreateForm(false)} />
+        <EmployeeCreateForm onSuccess={handleCreateSuccess} />
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div role="status" aria-live="polite" className="p-8 text-gray-500">
+      <div role="status" aria-live="polite" className="p-4 text-gray-500 sm:p-8">
         Loading employees...
       </div>
     );
@@ -47,16 +59,32 @@ export default function EmployeesPage() {
 
   if (error) {
     return (
-      <div role="alert" aria-live="assertive" className="p-8 text-red-600">
+      <div role="alert" aria-live="assertive" className="p-4 text-red-600 sm:p-8">
         Failed to load employees.
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
+    <div className="p-4 sm:p-8">
+      {successMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700"
+        >
+          {successMessage}
+        </div>
+      )}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
+          {employees && (
+            <p className="mt-1 text-sm text-gray-500">
+              {employees.length} {employees.length === 1 ? "employee" : "employees"}
+            </p>
+          )}
+        </div>
         <button
           onClick={() => setShowCreateForm(true)}
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

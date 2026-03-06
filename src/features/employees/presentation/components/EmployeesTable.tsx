@@ -3,9 +3,23 @@ import {
   getCoreRowModel,
   createColumnHelper,
   flexRender,
+  type RowData,
 } from "@tanstack/react-table";
 import type React from "react";
 import type { Employee } from "../../domain/employee.types";
+
+const statusStyles: Record<string, { badge: string; dot: string }> = {
+  active: {
+    badge: "bg-green-50 text-green-700",
+    dot: "bg-green-500",
+  },
+  inactive: {
+    badge: "bg-red-50 text-red-700",
+    dot: "bg-red-500",
+  },
+};
+
+const defaultStatusStyle = { badge: "bg-gray-100 text-gray-700", dot: "bg-gray-400" };
 
 const columnHelper = createColumnHelper<Employee>();
 
@@ -19,27 +33,24 @@ const columns = [
   }),
   columnHelper.accessor("position", {
     header: "Position",
+    meta: { hideOnMobile: true },
   }),
   columnHelper.accessor("department", {
     header: "Department",
+    meta: { hideOnMobile: true },
   }),
   columnHelper.accessor("status", {
     header: "Status",
     cell: (info) => {
       const status = info.getValue();
+      const styles = statusStyles[status] ?? defaultStatusStyle;
       return (
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-            status === "active"
-              ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
-          }`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${styles.badge}`}
         >
           <span
             aria-hidden="true"
-            className={`inline-block h-1.5 w-1.5 rounded-full ${
-              status === "active" ? "bg-green-500" : "bg-red-500"
-            }`}
+            className={`inline-block h-2 w-2 rounded-full ${styles.dot}`}
           />
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
@@ -47,6 +58,13 @@ const columns = [
     },
   }),
 ];
+
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    hideOnMobile?: boolean;
+  }
+}
 
 interface EmployeesTableProps {
   data: Employee[];
@@ -69,7 +87,9 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 sm:px-6"
+                  className={`px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 sm:px-6 ${
+                    header.column.columnDef.meta?.hideOnMobile ? "hidden sm:table-cell" : ""
+                  }`}
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -81,6 +101,16 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
           ))}
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
+          {table.getRowModel().rows.length === 0 && (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="py-12 text-center text-sm text-gray-500"
+              >
+                No employees found.
+              </td>
+            </tr>
+          )}
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
@@ -100,7 +130,12 @@ export default function EmployeesTable({ data, onRowClick }: EmployeesTableProps
                 : {})}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-3 py-3 text-sm text-gray-600 sm:whitespace-nowrap sm:px-6 sm:py-4">
+                <td
+                  key={cell.id}
+                  className={`px-3 py-3 text-sm text-gray-600 sm:whitespace-nowrap sm:px-6 sm:py-4 ${
+                    cell.column.columnDef.meta?.hideOnMobile ? "hidden sm:table-cell" : ""
+                  }`}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

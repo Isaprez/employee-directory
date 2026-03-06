@@ -24,11 +24,11 @@ export default function EmployeeDetailDetailPage({
     useUpdateEmployeeDetailMutation();
 
   if (isLoading) {
-    return <p className="p-8 text-gray-500">Loading employee details...</p>;
+    return <p className="p-4 sm:p-8 text-gray-500">Loading employee details...</p>;
   }
 
   if (error || !employee) {
-    return <p className="p-8 text-red-600">Failed to load employee details.</p>;
+    return <p className="p-4 sm:p-8 text-red-600">Failed to load employee details.</p>;
   }
 
   const handleSubmit = async (
@@ -39,12 +39,12 @@ export default function EmployeeDetailDetailPage({
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="mb-6 flex items-center gap-4">
         {onBack && (
           <button
             onClick={onBack}
-            className="text-sm text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2"
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm text-blue-600 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2"
           >
             &larr; Back to list
           </button>
